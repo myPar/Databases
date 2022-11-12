@@ -1,5 +1,5 @@
 SELECT teacher_id, teacher_name, teacher_surname, scientific_title,
-       subject_name, subject_type, timetable_subject_id
+       subject_name, subject_type, TeachersSpecialization.id AS specialization_id
 FROM
 ((
     (

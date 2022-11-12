@@ -113,3 +113,12 @@ grade BYTE,
 CONSTRAINT students_id_fk2 FOREIGN KEY (students_id) REFERENCES Students(id),
 CONSTRAINT subject_id_fk2 FOREIGN KEY (subject_id) REFERENCES Subjects(id)
 );
+
+CREATE TABLE TeachersPhones
+(
+id COUNTER PRIMARY KEY,
+teacher_id INT NOT NULL,
+phonen_number TEXT(30) NOT NULL,
+
+CONSTRAINT teacher_id_fk_phones FOREIGN KEY (teacher_id) REFERENCES Teachers(id)
+);
