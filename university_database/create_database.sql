@@ -122,3 +122,10 @@ phonen_number TEXT(30) NOT NULL,
 
 CONSTRAINT teacher_id_fk_phones FOREIGN KEY (teacher_id) REFERENCES Teachers(id)
 );
+
+CREATE TABLE Workplaces
+(
+id COUNTER PRIMARY KEY,
+place_name TEXT(25) NOT NULL,
+place_description TEXT(150)
+);
