@@ -60,6 +60,8 @@ WHERE Teachers.id = 3
 UPDATE Subjects SET id = 10, subject_name = 'Databases'
 WHERE Subjects.id = 5
 
+DELETE FROM Teachers WHERE Teachers.id = 1
+
 ALTER TABLE Teachers add degree VARCHAR2(20) DEFAULT ''
 
 DROP TABLE Teachers
