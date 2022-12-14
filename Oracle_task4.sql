@@ -87,3 +87,46 @@ UNION ALL
 SELECT CashFlow.ReportDate, CashFlow.CCY, CashFlow.AmountCCY, CurrencyRates.CurrencyRate 
 FROM CashFlow INNER JOIN CurrencyRates 
 ON CashFlow.CCY = CurrencyRates.CCY AND CashFlow.ReportDate = CurrencyRates.ReportDate
+
+---5
+
+SELECT CashFlow.ReportDate, CashFLow.CCY, CashFlow.AmountCCY, (CurrencyRates.CurrencyRate * CashFlow.AmountCCY) AS Amount_RUB FROM
+CashFlow INNER JOIN CurrencyRates
+ON CashFlow.ReportDate = CurrencyRates.ReportDate and CashFlow.CCY = CurrencyRates.CCY
+UNION
+SELECT ReportDate, CCY, AMOUNTCCY, AMOUNTCCY AS AMOUNT_RUB FROM CashFLow
+WHERE CCY = 'RUB' 
+
+---6
+SELECT eu_table.ReportDate, eu_table.CCY, ROUND(eu_table.CurrencyRate / usd_table.CurrencyRate, 2) AS eu_to_usd FROM
+(SELECT ReportDate, CCY, CurrencyRate FROM CurrencyRates WHERE CCY = 'EUR') eu_table
+INNER JOIN
+(SELECT ReportDate, CCY, CurrencyRate FROM CurrencyRates WHERE CCY = 'USD') usd_table
+ON eu_table.ReportDate = usd_table.ReportDate
+
+---7
+SELECT ReportDate, CCY, SUM(AmountCCY) sum_amount FROM CashFlow
+GROUP BY ReportDate, CCY
+ORDER BY ReportDate
+
+---8
+SELECT ReportDate, CCY, SUM(Full_amount) AS Full_amount FROM
+(SELECT eu_usd_amount.ReportDate, t.CCY, eu_usd_amount.Amount_USD AS full_amount FROM
+(SELECT eu_usd_rate.ReportDate, eu_usd_rate.CCY, (eu_usd_rate.eu_to_usd * CashFlow.Amountccy) AS amount_usd  FROM
+(SELECT eu_table.ReportDate, eu_table.CCY, ROUND(eu_table.CurrencyRate / usd_table.CurrencyRate, 2) AS eu_to_usd FROM
+(SELECT ReportDate, CCY, CurrencyRate FROM CurrencyRates WHERE CCY = 'EUR') eu_table
+INNER JOIN
+(SELECT ReportDate, CCY, CurrencyRate FROM CurrencyRates WHERE CCY = 'USD') usd_table
+ON eu_table.ReportDate = usd_table.ReportDate) eu_usd_rate
+INNER JOIN CashFlow ON CashFlow.CCY = eu_usd_rate.CCY and CashFlow.ReportDate = eu_usd_rate.ReportDate) eu_usd_amount
+FULL OUTER JOIN
+(SELECT CCY FROM CurrencyRates WHERE CCY = 'USD' and ReportDate = TO_DATE('01.09.2020')) t
+ON 1=1
+
+UNION
+
+SELECT ReportDate, CCY, SUM(AmountCCY) full_amount FROM CashFlow
+WHERE CCY != 'EUR'
+GROUP BY ReportDate, CCY) result_table
+GROUP BY CCY, ReportDate
+ORDER BY ReportDate
